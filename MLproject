@@ -1,0 +1,28 @@
+name: mlflow-pipeline
+python_env: python_env.yaml
+
+entry_points:
+  train:
+    parameters:
+      experiment_name: {type: str, default: "mlflow-pipeline"}
+      model_type: {type: str, default: "rf"}
+      params: {type: str, default: "{}"}
+    command: "python src/train.py --experiment-name {experiment_name} --model-type {model_type} --params '{params}'"
+  register:
+    parameters:
+      experiment_name: {type: str, default: "mlflow-pipeline"}
+      metric: {type: str, default: "f1_score"}
+    command: "python src/register_model.py --experiment-name {experiment_name} --metric {metric}"
+  predict:
+    parameters:
+      model_name: {type: str, default: "MLflowModel"}
+      alias: {type: str, default: "champion"}
+      data_path: {type: str, default: ""}
+      output: {type: str, default: "./predictions.csv"}
+    command: 'python src/predict.py --model-name {model_name} --alias {alias} --data-path "{data_path}" --output "{output}"'
+  build_image:
+    parameters:
+      model_name: {type: str, default: "MLflowModel"}
+      alias: {type: str, default: "champion"}
+      image_name: {type: str, default: "mlflow-model:latest"}
+    command: "python src/build_image.py --model-name {model_name} --alias {alias} --image-name {image_name}"

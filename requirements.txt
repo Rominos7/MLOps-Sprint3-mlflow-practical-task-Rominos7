@@ -1,0 +1,8 @@
+mlflow
+scikit-learn
+pandas
+numpy
+matplotlib
+pytest
+pytest-cov
+docker

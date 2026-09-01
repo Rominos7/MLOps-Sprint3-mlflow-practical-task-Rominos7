@@ -1,0 +1,9 @@
+order_id,customer_id,order_date,status,num_items,subtotal,tax,shipping,total,payment_method,shipping_address,delivery_date
+ORD-0000001,CUST-000101,2026-01-11 10:55:43.424038,delivered,1,950.97,76.08,0.0,1027.05,debit_card,"123 Main St, City A",2026-01-14 10:55:43.424038
+ORD-0000002,CUST-000102,2025-11-12 13:12:52.141701,delivered,1,239.98,19.20,0.0,259.18,apple_pay,"456 High St, City B",2025-11-15 13:12:52.141701
+ORD-0000003,CUST-000103,2024-11-13 17:50:36.449188,cancelled,1,198.26,15.86,0.0,214.12,paypal,"789 Park Ave, City C",
+ORD-0000004,CUST-000104,2026-03-06 18:27:51.139403,returned,2,608.94,48.72,0.0,657.66,paypal,"10 Oak Rd, City D",
+ORD-0000005,CUST-000105,2025-12-09 15:43:22.081420,delivered,3,580.22,46.42,0.0,626.64,debit_card,"11 Pine Rd, City E",2025-12-19 15:43:22.081420
+ORD-0000006,CUST-000106,2025-10-01 09:22:10.000000,processing,2,320.00,25.60,4.99,350.59,credit_card,"12 Maple Rd, City F",
+ORD-0000007,CUST-000107,2025-10-04 11:02:05.000000,pending,1,49.90,3.99,4.99,58.88,credit_card,"13 Cedar Rd, City G",
+ORD-0000008,CUST-000108,2025-10-10 08:30:00.000000,delivered,4,1200.00,96.00,0.0,1296.00,apple_pay,"14 Birch Rd, City H",2025-10-14 08:30:00.000000

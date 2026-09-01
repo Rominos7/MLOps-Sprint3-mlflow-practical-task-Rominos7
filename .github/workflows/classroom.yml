@@ -1,0 +1,40 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: MLFlow Tests
+      id: mlflow-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: mlflow-tests
+        setup-command: |
+          pip install -r requirements.txt
+        command: pytest -v --tb=short
+        timeout: 10
+      env:
+        MLFLOW_TRACKING_URI: sqlite:///${{ github.workspace }}/mlflow.db
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        MLFLOW-TESTS_RESULTS: "${{steps.mlflow-tests.outputs.result}}"
+      with:
+        runners: mlflow-tests
