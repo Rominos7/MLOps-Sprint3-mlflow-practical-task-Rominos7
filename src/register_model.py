@@ -23,22 +23,26 @@ def register_best_model(
     if tracking_uri:
         mlflow.set_tracking_uri(tracking_uri)
 
-    # -------------------------------------------------------------------------
-    # TASK: Implement Model Registration
-    #
-    # 1. Retrieve the experiment object by the name provided in 'experiment_name'.
-    # 2. Search for runs within that experiment.
-    #    - Order the results by the metric name in 'metric' in descending order.
-    #    - Limit the results to the single best run.
-    # 3. Register the model found in the best run's "model" artifact path.
-    #    - Use the name provided in 'model_name'.
-    # 4. Initialize the MLflow Client.
-    # 5. Set the alias from 'alias' to the specific version of the model 
-    #    you just registered.
-    # -------------------------------------------------------------------------
+    experiment = mlflow.get_experiment_by_name(experiment_name)
+    if experiment is None:
+        raise ValueError(f"Experiment '{experiment_name}' not found.")
 
-    # TODO: Implement model registration logic here
-    result = None
+    runs = mlflow.search_runs(
+        experiment_ids=[experiment.experiment_id],
+        order_by=[f"metrics.{metric} DESC"],
+        max_results=1,
+    )
+    if runs.empty:
+        raise ValueError(f"No runs found in experiment '{experiment_name}'.")
+
+    best_run_id = runs.iloc[0]["run_id"]
+    model_uri = f"runs:/{best_run_id}/model"
+
+    result = mlflow.register_model(model_uri=model_uri, name=model_name)
+
+    client = MlflowClient()
+    client.set_registered_model_alias(name=model_name, alias=alias, version=result.version)
+
     print(f"Model version {result.version} registered as '{model_name}' with alias '{alias}'.")
 
 
