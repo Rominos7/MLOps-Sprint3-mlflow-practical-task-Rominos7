@@ -21,19 +21,14 @@ def build_serving_image(
     if tracking_uri:
         mlflow.set_tracking_uri(tracking_uri)
 
-    # -------------------------------------------------------------------------
-    # TASK: Implement Docker Image Building
-    #
-    # 1. Construct the model URI using 'model_name' and 'alias'.
-    #    Example: "models:/ModelName@champion"
-    # 2. Use 'mlflow.models.build_docker' to build the image.
-    #    - Set 'model_uri' to the URI you constructed.
-    #    - Set 'name' to the 'image_name'.
-    #    - Set 'env_manager' to "local".
-    # -------------------------------------------------------------------------
+    model_uri = f"models:/{model_name}@{alias}"
 
-    # TODO: Implement Docker Image Building
-    model_uri = None
+    mlflow.models.build_docker(
+        model_uri=model_uri,
+        name=image_name,
+        env_manager="local",
+    )
+
     print(f"Docker image '{image_name}' built for model: {model_uri}")
 
 
