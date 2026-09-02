@@ -29,17 +29,12 @@ def make_predictions(
     if tracking_uri:
         mlflow.set_tracking_uri(tracking_uri)
 
-    # -------------------------------------------------------------------------
-    # TASK: Implement Model Loading
-    #
-    # 1. Construct the model URI using the provided 'model_name'.
-    #    - If 'version' is provided, the URI should use the specific version.
-    #    - Otherwise, use the 'alias' provided.
-    # 2. Use the MLflow 'pyfunc' flavour to load the model from the URI.
-    # -------------------------------------------------------------------------
+    if version is not None:
+        model_uri = f"models:/{model_name}/{version}"
+    else:
+        model_uri = f"models:/{model_name}@{alias}"
 
-    # TODO: Implement model loading logic here
-    model = None
+    model = mlflow.pyfunc.load_model(model_uri)
 
     df = load_data(data_path)
     if limit:
@@ -47,15 +42,14 @@ def make_predictions(
     X, y, feature_names = preprocess(df)
 
     if model:
-        # -------------------------------------------------------------------------
-        # TASK: Generate Predictions
-        # 1. Use the loaded 'model' to predict values from the processed data 'X'.
-        # 2. Create a DataFrame with columns "actual" and "predicted" containing true and predicted values.
-        # 3. If an output file path is provided, write the DataFrame to CSV and notify the user.
-        #    Otherwise, print the top 20 rows of the DataFrame to the console.
-        # -------------------------------------------------------------------------
+        predictions = model.predict(X)
+        result_df = pd.DataFrame({"actual": y, "predicted": predictions})
 
-        # TODO: Implement prediction logic here
+        if output:
+            result_df.to_csv(output, index=False)
+            print(f"Predictions written to {output}")
+        else:
+            print(result_df.head(20))
     else:
         print("Model not loaded in make_predictions(). Implement loading logic.")
 
