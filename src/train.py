@@ -67,12 +67,12 @@ def log_plots(model: object, X_test: object, y_test: object) -> None:
     fig_cm, ax_cm = plt.subplots(figsize=(5, 4))
     ConfusionMatrixDisplay.from_estimator(model, X_test, y_test, ax=ax_cm, cmap="Blues")
     fig_cm.tight_layout()
-    # TODO: Log fig_cm as an artifact named "confusion_matrix.png"
+    mlflow.log_figure(fig_cm, "confusion_matrix.png")
 
     fig_roc, ax_roc = plt.subplots(figsize=(5, 4))
     RocCurveDisplay.from_estimator(model, X_test, y_test, ax=ax_roc)
     fig_roc.tight_layout()
-    # TODO: Log fig_roc as an artifact named "roc_curve.png"
+    mlflow.log_figure(fig_roc, "roc_curve.png")
 
     plt.close(fig_cm)
     plt.close(fig_roc)
@@ -102,20 +102,19 @@ def run_training(
     model.fit(X_train, y_train)
     metrics = evaluate(model, X_test, y_test)
 
-    # -------------------------------------------------------------------------
-    # TASK: Implement MLflow Logging
-    #
-    # 1. Set the active experiment using 'experiment_name'.
-    # 2. Start a new MLflow run, giving it a name that includes the 'model_type'.
-    # 3. Log the dictionary of hyperparameters ('params').
-    # 4. Log the dictionary of evaluation 'metrics'.
-    # 5. Log the trained 'model' using the Scikit-Learn flavour.
-    #    - Set 'artifact_path' to "model".
-    #    - Provide 'X_test.iloc[:5]' as an 'input_example' for schema logging.
-    # 6. Call 'log_plots()' to ensure the figures are saved to the current run.
-    # -------------------------------------------------------------------------
+    mlflow.set_experiment(experiment_name)
 
-    # TODO: Implement MLflow logic here
+    os.environ.pop("MLFLOW_RUN_ID", None)
+    with mlflow.start_run(run_name=f"{model_type}_run"):
+        mlflow.log_params(params)
+        mlflow.log_metrics(metrics)
+        mlflow.sklearn.log_model(
+            model,
+            artifact_path="model",
+            input_example=X_test.iloc[:5],
+        )
+        log_plots(model, X_test, y_test)
+
     print(f"Training of {model_type} complete.")
 
 
