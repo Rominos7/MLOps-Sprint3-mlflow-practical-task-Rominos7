@@ -21,7 +21,7 @@ def load_data(path: str = None) -> pd.DataFrame:
     """
     Load the dataset CSV and perform minimal cleaning.
     """
-    if path is None:
+    if not path:
         path = DEFAULT_DATA_PATH
 
     if not os.path.exists(path):
